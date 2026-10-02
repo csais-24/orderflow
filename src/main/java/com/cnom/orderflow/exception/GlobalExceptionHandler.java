@@ -13,4 +13,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> duplicateEmailError(DuplicateEmailException err) {
         return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(ProductNotFoundException.class)
+    public ResponseEntity<ErrorResponse> productNotFoundError(ProductNotFoundException err){
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(InventoryNotFoundException.class)
+    public ResponseEntity<ErrorResponse> inventoryNotFoundException(InventoryNotFoundException err) {
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.NOT_FOUND);
+    }
 }

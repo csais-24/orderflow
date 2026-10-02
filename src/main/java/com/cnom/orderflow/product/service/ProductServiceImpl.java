@@ -6,6 +6,9 @@ import com.cnom.orderflow.product.entity.Product;
 import com.cnom.orderflow.product.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+import java.util.UUID;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -33,4 +36,11 @@ public class ProductServiceImpl implements ProductService {
           savedProduct.getUpdatedAt()
         );
     }
+
+    @Override
+    public boolean productExistsById(UUID productId) {
+        return productRepository.existsById(productId);
+    }
+
+
 }
