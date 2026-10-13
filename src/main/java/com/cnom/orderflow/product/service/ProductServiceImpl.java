@@ -1,5 +1,6 @@
 package com.cnom.orderflow.product.service;
 
+import com.cnom.orderflow.exception.ProductNotFoundException;
 import com.cnom.orderflow.product.dto.CreateProductRequest;
 import com.cnom.orderflow.product.dto.ProductResponse;
 import com.cnom.orderflow.product.entity.Product;
@@ -40,6 +41,21 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean productExistsById(UUID productId) {
         return productRepository.existsById(productId);
+    }
+
+    @Override
+    public ProductResponse getProductById(UUID productId) {
+        Product productFromDb = productRepository
+                .findById(productId).orElseThrow(() -> new ProductNotFoundException("Product not found"));
+        return new ProductResponse(
+                productFromDb.getId(),
+                productFromDb.getName(),
+                productFromDb.getDescription(),
+                productFromDb.getPrice(),
+                productFromDb.isActive(),
+                productFromDb.getCreatedAt(),
+                productFromDb.getUpdatedAt()
+        );
     }
 
 

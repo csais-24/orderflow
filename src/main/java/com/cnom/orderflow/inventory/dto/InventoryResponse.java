@@ -5,7 +5,7 @@ import java.util.UUID;
 public record InventoryResponse(
         UUID id,
         UUID productId,
-        Long available,
-        Long reserved
+        Integer available,
+        Integer reserved
 ) {
 }

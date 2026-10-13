@@ -1,6 +1,6 @@
 package com.cnom.orderflow;
 
-import com.cnom.orderflow.inventory.InventoryController;
+import com.cnom.orderflow.inventory.controller.InventoryController;
 import com.cnom.orderflow.inventory.dto.InventoryResponse;
 import com.cnom.orderflow.inventory.service.InventoryService;
 import org.junit.jupiter.api.Assertions;
@@ -40,8 +40,8 @@ public class InventoryControllerTest {
         InventoryResponse inventoryResponse = new InventoryResponse(
                 fixedInventoryUUID,
                 UUID.fromString("f353ca91-4fc5-49f2-9b9e-304f83d11914"),
-                0L,
-                0L
+                0,
+                0
         );
         Mockito.when(inventoryService.createInventory(Mockito.any(UUID.class)))
                 .thenReturn(inventoryResponse);
@@ -73,7 +73,7 @@ public class InventoryControllerTest {
     @Test
     public void shouldAddStockSuccessfully() throws Exception {
         ArgumentCaptor<UUID> uuidArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
-        ArgumentCaptor<Long> quantityArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<Integer> quantityArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
         String jsonAddStockToInventoryRequest = """
                     {
                         "quantity": 10
@@ -86,7 +86,7 @@ public class InventoryControllerTest {
         )
                 .andExpect(status().isNoContent());
         Mockito.verify(inventoryService).addStock(uuidArgumentCaptor.capture(), quantityArgumentCaptor.capture());
-        Assertions.assertEquals(10L, quantityArgumentCaptor.getValue());
+        Assertions.assertEquals(10, quantityArgumentCaptor.getValue());
         Assertions.assertEquals("f353ca91-4fc5-49f2-9b9e-304f83d11914", uuidArgumentCaptor.getValue().toString());
     }
 
@@ -103,6 +103,6 @@ public class InventoryControllerTest {
                         .content(jsonAddStockToInventoryRequest)
         )
                 .andExpect(status().isBadRequest());
-        Mockito.verify(inventoryService, Mockito.never()).addStock(Mockito.any(UUID.class), Mockito.anyLong());
+        Mockito.verify(inventoryService, Mockito.never()).addStock(Mockito.any(UUID.class), Mockito.anyInt());
     }
 }

@@ -23,4 +23,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> inventoryNotFoundException(InventoryNotFoundException err) {
         return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> userNotFoundException(UserNotFoundException err) {
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(IdempotencyKeyConflictException.class)
+    public ResponseEntity<ErrorResponse> idempotencyKeyConflictException(IdempotencyKeyConflictException err) {
+        return new ResponseEntity<>(new ErrorResponse(err.getMessage()), HttpStatus.CONFLICT);
+    }
 }

@@ -1,4 +1,4 @@
-package com.cnom.orderflow.inventory;
+package com.cnom.orderflow.inventory.controller;
 
 import com.cnom.orderflow.inventory.dto.AddInventoryStockRequest;
 import com.cnom.orderflow.inventory.dto.CreateInventoryRequest;

@@ -68,5 +68,7 @@ public class User {
         return active;
     }
 
-
+    public String getPasswordHash() {
+        return passwordHash;
+    }
 }

@@ -1,6 +1,7 @@
 package com.cnom.orderflow.user.service;
 
 import com.cnom.orderflow.exception.DuplicateEmailException;
+import com.cnom.orderflow.exception.UserNotFoundException;
 import com.cnom.orderflow.user.dto.CreateUserRequest;
 import com.cnom.orderflow.user.dto.UserResponse;
 import com.cnom.orderflow.user.entity.User;
@@ -38,6 +39,21 @@ public class UserServiceImpl implements UserService {
                 savedUser.getCreatedAt(),
                 savedUser.getUpdatedAt(),
                 savedUser.isActive()
+        );
+    }
+
+    @Override
+    public UserResponse getUserByEmail(String userEmail) {
+        Optional<User> userFromDb = userRepository.findByEmail(userEmail);
+
+        User user = userFromDb.orElseThrow(() -> new UserNotFoundException("user not found"));
+
+        return new UserResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
+                user.isActive()
         );
     }
 }

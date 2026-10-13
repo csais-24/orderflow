@@ -37,7 +37,7 @@ public class InventoryServiceImplTest {
     public void shouldCreateInventorySuccessfully(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
         ArgumentCaptor<Inventory> inventoryArgumentCaptor = ArgumentCaptor.forClass(Inventory.class);
-        Inventory fixedInventoryReq = new Inventory(fixedProductUUID, 0L, 0L);
+        Inventory fixedInventoryReq = new Inventory(fixedProductUUID, 0, 0);
 
 
         Mockito.when(productService.productExistsById(Mockito.any(UUID.class)))
@@ -89,12 +89,12 @@ public class InventoryServiceImplTest {
     @Test
     public void shouldReserveInventorySuccessfully(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 10L, 3L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 10, 3);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                         .thenReturn(Optional.of(inventoryMock));
 
-        inventoryService.reserve(fixedProductUUID, 5L);
+        inventoryService.reserve(fixedProductUUID, 5);
         Mockito.verify(inventoryRepository).findById(Mockito.any(UUID.class));
         Assertions.assertEquals(5, inventoryMock.getAvailable());
         Assertions.assertEquals(8, inventoryMock.getReserved());
@@ -104,7 +104,7 @@ public class InventoryServiceImplTest {
     @Test
     public void shouldThrowInsufficientInventoryException(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 3L, 5L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 3, 5);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(inventoryMock));
@@ -112,16 +112,16 @@ public class InventoryServiceImplTest {
         Assertions
                 .assertThrows(
                         InsufficientInventoryException.class,
-                        () -> inventoryService.reserve(fixedProductUUID, 5L));
+                        () -> inventoryService.reserve(fixedProductUUID, 5));
 
-        Assertions.assertEquals(3L, inventoryMock.getAvailable());
-        Assertions.assertEquals(5L, inventoryMock.getReserved());
+        Assertions.assertEquals(3, inventoryMock.getAvailable());
+        Assertions.assertEquals(5, inventoryMock.getReserved());
     }
 
     @Test
     public void shouldThrowIllegalQuantityException(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 3L, 5L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 3, 5);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(inventoryMock));
@@ -129,10 +129,10 @@ public class InventoryServiceImplTest {
         Assertions
                 .assertThrows(
                         IllegalQuantityException.class,
-                        () -> inventoryService.reserve(fixedProductUUID, 0L));
+                        () -> inventoryService.reserve(fixedProductUUID, 0));
 
-        Assertions.assertEquals(3L, inventoryMock.getAvailable());
-        Assertions.assertEquals(5L, inventoryMock.getReserved());
+        Assertions.assertEquals(3, inventoryMock.getAvailable());
+        Assertions.assertEquals(5, inventoryMock.getReserved());
         Mockito.verify(inventoryRepository, Mockito.never()).findById(Mockito.any(UUID.class));
     }
 
@@ -140,15 +140,15 @@ public class InventoryServiceImplTest {
     public void shouldCompleteSuccessfully(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
         UUID fixedInventoryUUID = UUID.fromString("6ba7b801-9dad-11b2-80b4-00c04fd430b9");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 3L, 5L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 3, 5);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(inventoryMock));
 
-        inventoryService.complete(fixedInventoryUUID, 3L);
+        inventoryService.complete(fixedInventoryUUID, 3);
 
-        Assertions.assertEquals(2L, inventoryMock.getReserved());
-        Assertions.assertEquals(3L, inventoryMock.getAvailable());
+        Assertions.assertEquals(2, inventoryMock.getReserved());
+        Assertions.assertEquals(3, inventoryMock.getAvailable());
         Assertions.assertEquals(fixedProductUUID, inventoryMock.getProductId());
     }
 
@@ -156,7 +156,7 @@ public class InventoryServiceImplTest {
     public void shouldThrowInsufficientInventoryExceptionWhenReserved(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
         UUID fixedInventoryUUID = UUID.fromString("6ba7b801-9dad-11b2-80b4-00c04fd430b9");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 3L, 5L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 3, 5);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(inventoryMock));
@@ -164,17 +164,17 @@ public class InventoryServiceImplTest {
         Assertions
                 .assertThrows(
                         InsufficientInventoryException.class,
-                        () -> inventoryService.complete(fixedInventoryUUID, 6L));
+                        () -> inventoryService.complete(fixedInventoryUUID, 6));
 
-        Assertions.assertEquals(5L, inventoryMock.getReserved());
-        Assertions.assertEquals(3L, inventoryMock.getAvailable());
+        Assertions.assertEquals(5, inventoryMock.getReserved());
+        Assertions.assertEquals(3, inventoryMock.getAvailable());
     }
 
     @Test
     public void shouldThrowIllegalQuantityExceptionWhenReserved(){
         UUID fixedProductUUID = UUID.fromString("6ba7b814-9dad-11d1-80b4-00c04fd430d1");
         UUID fixedInventoryUUID = UUID.fromString("6ba7b801-9dad-11b2-80b4-00c04fd430b9");
-        Inventory inventoryMock = new Inventory(fixedProductUUID, 3L, 5L);
+        Inventory inventoryMock = new Inventory(fixedProductUUID, 3, 5);
 
         Mockito.when(inventoryRepository.findById(Mockito.any(UUID.class)))
                 .thenReturn(Optional.of(inventoryMock));
@@ -182,9 +182,9 @@ public class InventoryServiceImplTest {
         Assertions
                 .assertThrows(
                         IllegalQuantityException.class,
-                        () -> inventoryService.complete(fixedInventoryUUID, -1L));
+                        () -> inventoryService.complete(fixedInventoryUUID, -1));
 
-        Assertions.assertEquals(5L, inventoryMock.getReserved());
-        Assertions.assertEquals(3L, inventoryMock.getAvailable());
+        Assertions.assertEquals(5, inventoryMock.getReserved());
+        Assertions.assertEquals(3, inventoryMock.getAvailable());
     }
 }

@@ -6,6 +6,6 @@ import jakarta.validation.constraints.NotNull;
 public record AddInventoryStockRequest(
         @NotNull
         @Min(1)
-        Long quantity
+        Integer quantity
 ) {
 }

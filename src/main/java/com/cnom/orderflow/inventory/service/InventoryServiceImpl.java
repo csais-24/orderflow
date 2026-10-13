@@ -5,8 +5,8 @@ import com.cnom.orderflow.inventory.dto.InventoryResponse;
 import com.cnom.orderflow.inventory.entity.Inventory;
 import com.cnom.orderflow.inventory.repository.InventoryRepository;
 import com.cnom.orderflow.product.service.ProductService;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
@@ -31,7 +31,7 @@ public class InventoryServiceImpl implements InventoryService{
             throw new InventoryAlreadyExistsException("product already in the inventory");
         }
 
-        Inventory savedInventory = inventoryRepository.save(new Inventory(productId, 0L, 0L));
+        Inventory savedInventory = inventoryRepository.save(new Inventory(productId, 0, 0));
         return new InventoryResponse(
                 savedInventory.getId(),
                 savedInventory.getProductId(),
@@ -40,7 +40,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public void reserve(UUID inventoryId, Long quantity) {
+    public void reserve(UUID inventoryId, Integer quantity) {
         if (quantity <= 0){
             throw new IllegalQuantityException("Amount must be positive");
         }
@@ -56,7 +56,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public void complete(UUID inventoryId, Long quantity) {
+    public void complete(UUID inventoryId, Integer quantity) {
         if (quantity <= 0){
             throw new IllegalQuantityException("Amount must be positive");
         }
@@ -70,7 +70,7 @@ public class InventoryServiceImpl implements InventoryService{
     }
 
     @Override
-    public void restore(UUID inventoryId, Long quantity) {
+    public void restore(UUID inventoryId, Integer quantity) {
         if (quantity <= 0){
             throw new IllegalQuantityException("Amount must be positive");
         }
@@ -87,12 +87,24 @@ public class InventoryServiceImpl implements InventoryService{
 
     @Transactional
     @Override
-    public void addStock(UUID inventoryId, Long quantity) {
+    public void addStock(UUID inventoryId, Integer quantity) {
         if (quantity <= 0){
             throw new IllegalQuantityException("Amount must be positive");
         }
         Inventory inventoryFromDb = inventoryRepository.findById(inventoryId)
                 .orElseThrow(() -> new InventoryNotFoundException("inventory not found"));
         inventoryFromDb.setAvailable(inventoryFromDb.getAvailable() + quantity);
+    }
+
+    @Override
+    public InventoryResponse getInventoryByProductId(UUID productId) {
+        Inventory inventoryFromDb = inventoryRepository.findByProductId(productId)
+                .orElseThrow(() -> new InventoryNotFoundException("Inventory not found for the given product id"));
+        return new InventoryResponse(
+                inventoryFromDb.getId(),
+                inventoryFromDb.getProductId(),
+                inventoryFromDb.getAvailable(),
+                inventoryFromDb.getReserved()
+        );
     }
 }

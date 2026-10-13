@@ -16,10 +16,10 @@ public class Inventory {
     private UUID productId;
 
     @Column(nullable = false)
-    private Long available;
+    private Integer available;
 
     @Column(nullable = false)
-    private Long reserved;
+    private Integer reserved;
 
     @Version
     private Long version;
@@ -27,7 +27,7 @@ public class Inventory {
     protected Inventory() {
     }
 
-    public Inventory(UUID productId, Long available, Long reserved) {
+    public Inventory(UUID productId, Integer available, Integer reserved) {
         this.productId = productId;
         this.available = available;
         this.reserved = reserved;
@@ -41,11 +41,11 @@ public class Inventory {
         return productId;
     }
 
-    public Long getAvailable() {
+    public Integer getAvailable() {
         return available;
     }
 
-    public Long getReserved() {
+    public Integer getReserved() {
         return reserved;
     }
 
@@ -53,11 +53,11 @@ public class Inventory {
         return version;
     }
 
-    public void setAvailable(Long available) {
+    public void setAvailable(Integer available) {
         this.available = available;
     }
 
-    public void setReserved(Long reserved) {
+    public void setReserved(Integer reserved) {
         this.reserved = reserved;
     }
 
